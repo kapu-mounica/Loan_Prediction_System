@@ -1,0 +1,2 @@
+# Trained model artifacts are written here by `python -m backend.ml.train_model`:
+#   loan_risk_model.pkl  scaler.pkl  encoder.pkl  feature_columns.pkl  report.json

@@ -35,7 +35,7 @@ import {
   Home,
 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 
@@ -55,14 +55,16 @@ const requiredNumber = (label: string, min: number, max: number, minMsg?: string
   );
 
 const optionalNumber = (label: string, min: number, max: number) =>
-  z.preprocess(
-    (v) => (v === "" || v === null || v === undefined ? undefined : v),
-    z.coerce
-      .number()
-      .refine((v) => !Number.isFinite(v) || v >= min, `${label} cannot be negative.`)
-      .refine((v) => !Number.isFinite(v) || v <= max, `${label} must be at most ${max}.`)
-      .optional()
-  );
+  z
+    .union([
+      z.literal(""),
+      z.coerce
+        .number()
+        .refine((v) => Number.isFinite(v), `${label} must be a number.`)
+        .refine((v) => v >= min, `${label} cannot be negative.`)
+        .refine((v) => v <= max, `${label} must be at most ${max}.`),
+    ])
+    .optional();
 
 const s1Schema = z.object({
   applicant_age: requiredNumber("Age", 18, 90, "Age must be at least 18.", true),
@@ -179,7 +181,9 @@ export default function Assess() {
   const [apiError, setApiError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(fullSchema),
+    // zod v4 schemas infer `unknown` inputs for coerce/preprocess fields, so
+    // the resolver is typed explicitly against the form's concrete values.
+    resolver: zodResolver(fullSchema) as unknown as Resolver<FormValues, any, FormValues>,
     mode: "onTouched",
     defaultValues: {
       applicant_age: undefined as never,
@@ -239,7 +243,7 @@ export default function Assess() {
             ? values.applicant_income > 0
               ? Math.round((values.monthly_expenses / values.applicant_income) * 100) / 100
               : null
-            : values.debt_to_income_ratio,
+            : (values.debt_to_income_ratio ?? null),
       };
       const result = await predict({ input });
       saveAssessment(input, result);

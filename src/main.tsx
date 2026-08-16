@@ -13,7 +13,16 @@ import "./index.css";
 const Landing = lazy(() => import("./pages/Landing.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
+const Assess = lazy(() => import("./pages/Assess.tsx"));
+const Results = lazy(() => import("./pages/Results.tsx"));
+const Analytics = lazy(() => import("./pages/Analytics.tsx"));
+const Explainability = lazy(() => import("./pages/Explainability.tsx"));
+const ResponsibleAI = lazy(() => import("./pages/ResponsibleAI.tsx"));
+const About = lazy(() => import("./pages/About.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const AppLayout = lazy(() =>
+  import("./components/layout/AppLayout.tsx").then((m) => ({ default: m.AppLayout })),
+);
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
@@ -119,19 +128,58 @@ createRoot(document.getElementById("root")!).render(
           <RouteSyncer />
           <Suspense fallback={<RouteLoading />}>
             <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route
-                path="/auth"
-                element={<AuthPage redirectAfterAuth="/dashboard" />}
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <RequireAuth>
-                    <Dashboard />
-                  </RequireAuth>
-                }
-              />
+              <Route path="/auth" element={<AuthPage redirectAfterAuth="/dashboard" />} />
+              {/* Pages with the shared header/footer (all links below resolve here) */}
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<Landing />} />
+                {/* Public informational pages */}
+                <Route path="/responsible-ai" element={<ResponsibleAI />} />
+                <Route path="/about" element={<About />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+              {/* Authenticated product pages */}
+              <Route element={<AppLayout />}>
+                <Route
+                  path="/dashboard"
+                  element={
+                    <RequireAuth>
+                      <Dashboard />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/assess"
+                  element={
+                    <RequireAuth>
+                      <Assess />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/results"
+                  element={
+                    <RequireAuth>
+                      <Results />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/analytics"
+                  element={
+                    <RequireAuth>
+                      <Analytics />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/explain"
+                  element={
+                    <RequireAuth>
+                      <Explainability />
+                    </RequireAuth>
+                  }
+                />
+              </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -1,272 +1,273 @@
-## Overview
+# Loan Risk Assessment & Approval Prediction System
 
-This project uses the following tech stack:
-- Vite
-- Typescript
-- React Router v7 (all imports from `react-router` instead of `react-router-dom`)
-- React 19 (for frontend components)
-- Tailwind v4 (for styling)
-- Shadcn UI (for UI components library)
-- Lucide Icons (for icons)
-- Convex (for backend & database)
-- Convex Auth (for authentication)
-- Framer Motion (for animations)
-- Three js (for 3d models)
+**AI-Powered Machine Learning Based Loan Risk Assessment**
 
-All relevant files live in the 'src' directory.
+A complete, production-shaped loan risk assessment and approval prediction
+system: a trained machine-learning model evaluates loan applications and
+returns an approval prediction, an interpretable 0–100 risk score, and an
+explanation of the factors that drove the decision.
 
-Use bun for the package manager.
+Built for **B.Tech CSE projects, resumes/portfolios, and placement
+demonstrations** — every layer is real: dataset generation, preprocessing,
+training, evaluation, model selection, a live prediction API, an analytics
+dashboard, and explainability.
 
-## Setup
+---
 
-This project is set up already and running on a cloud environment, as well as a convex development in the sandbox.
+## Live deployment
 
-## Environment Variables
+The app is deployed on the Freebuff/Vly platform:
 
-The project is set up with project specific CONVEX_DEPLOYMENT and VITE_CONVEX_URL environment variables on the client side.
+- **Frontend** — React 19 + TypeScript + Vite + Tailwind CSS v4 + shadcn/ui + Recharts + Framer Motion
+- **Backend / API** — Convex (queries, mutations, actions). No applicant data is stored.
+- **Machine learning** — a pure TypeScript ML engine (`src/ml/`) implementing
+  real algorithms (gradient-descent logistic regression, bagged decision-tree
+  random forest) that runs in the same process as the API, so training and
+  inference share the exact same preprocessing and model code.
 
-The convex server has a separate set of environment variables that are accessible by the convex backend.
+A **Python FastAPI + scikit-learn** reference implementation of the same
+system lives in [`backend/`](#python-fastapi-backend) for local/self-hosted
+execution (e.g. to demonstrate a classic Python ML stack in a presentation).
 
-Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, and SITE_URL.
+---
 
-
-# Using Authentication (Important!)
-
-You must follow these conventions when using authentication.
-
-## Auth is already set up.
-
-All convex authentication functions are already set up. The auth currently uses email OTP and anonymous users, but can support more.
-
-The email OTP configuration is defined in `src/convex/auth/emailOtp.ts`. DO NOT MODIFY THIS FILE.
-
-Also, DO NOT MODIFY THESE AUTH FILES: `src/convex/auth.config.ts` and `src/convex/auth.ts`.
-
-## Using Convex Auth on the backend
-
-On the `src/convex/users.ts` file, you can use the `getCurrentUser` function to get the current user's data.
-
-## Using Convex Auth on the frontend
-
-The `/auth` page is already set up to use auth. Navigate to `/auth` for all log in / sign up sequences.
-
-You MUST use this hook to get user data. Never do this yourself without the hook:
-```typescript
-import { useAuth } from "@/hooks/use-auth";
-
-const { isLoading, isAuthenticated, user, signIn, signOut } = useAuth();
-```
-
-## Protected Routes
-
-The starter `/dashboard` route is protected with `RequireAuth`, which sends
-signed-out users to `/auth?returnTo=<current route>`. Extend that page for the
-product's authenticated experience, and reuse `RequireAuth` when adding another
-protected route.
-
-## Auth Page
-
-The auth page is defined in `src/pages/Auth.tsx`. Send sign-in and sign-up actions
-to `/auth`.
-
-## Authorization
-
-You can perform authorization checks on the frontend and backend.
-
-On the frontend, you can use the `useAuth` hook to get the current user's data and authentication state.
-
-You should also be protecting queries, mutations, and actions at the base level, checking for authorization securely.
-
-## Adding a redirect after auth
-
-The `/auth` route in `src/main.tsx` redirects to `/dashboard` by default. If the
-product's main authenticated route is different, update `redirectAfterAuth` to
-that route. A validated same-origin `returnTo` query parameter takes priority so
-users can resume the protected page they originally requested. Never leave an
-authenticated product redirecting back to the public landing page.
-
-## Complete authenticated products
-
-When the requested product implies accounts, a workspace, a dashboard, or other
-signed-in functionality, the task is not complete with only a landing page and
-auth form. Build the main authenticated experience, protect its route, and verify
-that signing in reaches it.
-
-# Frontend Conventions
-
-You will be using the Vite frontend with React 19, Tailwind v4, and Shadcn UI.
-
-Generally, pages should be in the `src/pages` folder, and components should be in the `src/components` folder.
-
-Shadcn primitives are located in the `src/components/ui` folder and should be used by default.
-
-## Page routing
-
-Your page component should go under the `src/pages` folder.
-
-When adding a page, update the react router configuration in `src/main.tsx` to include the new route you just added.
-
-## Shad CN conventions
-
-Follow these conventions when using Shad CN components, which you should use by default.
-- Remember to use "cursor-pointer" to make the element clickable
-- For title text, use the "tracking-tight font-bold" class to make the text more readable
-- Always make apps MOBILE RESPONSIVE. This is important
-- AVOID NESTED CARDS. Try and not to nest cards, borders, components, etc. Nested cards add clutter and make the app look messy.
-- AVOID SHADOWS. Avoid adding any shadows to components. stick with a thin border without the shadow.
-- Avoid skeletons; instead, use the loader2 component to show a spinning loading state when loading data.
-
-
-## Landing Pages
-
-You must always create good-looking designer-level styles to your application. 
-- Make it well animated and fit a certain "theme", ie neo brutalist, retro, neumorphism, glass morphism, etc
-
-Use known images and emojis from online.
-
-If the user is logged in already, show the get started button to say "Dashboard" or "Profile" instead to take them there.
-
-## Responsiveness and formatting
-
-Make sure pages are wrapped in a container to prevent the width stretching out on wide screens. Always make sure they are centered aligned and not off-center.
-
-Always make sure that your designs are mobile responsive. Verify the formatting to ensure it has correct max and min widths as well as mobile responsiveness.
-
-- Always create sidebars for protected dashboard pages and navigate between pages
-- Always create navbars for landing pages
-- On these bars, the created logo should be clickable and redirect to the index page
-
-## Animating with Framer Motion
-
-You must add animations to components using Framer Motion. It is already installed and configured in the project.
-
-To use it, import the `motion` component from `framer-motion` and use it to wrap the component you want to animate.
-
-
-### Other Items to animate
-- Fade in and Fade Out
-- Slide in and Slide Out animations
-- Rendering animations
-- Button clicks and UI elements
-
-Animate for all components, including on landing page and app pages.
-
-## Three JS Graphics
-
-Your app comes with three js by default. You can use it to create 3D graphics for landing pages, games, etc.
-
-
-## Colors
-
-You can override colors in: `src/index.css`
-
-This uses the oklch color format for tailwind v4.
-
-Always use these color variable names.
-
-Make sure all ui components are set up to be mobile responsive and compatible with both light and dark mode.
-
-Set theme using `dark` or `light` variables at the parent className.
-
-## Styling and Theming
-
-When changing the theme, always change the underlying theme of the shad cn components app-wide under `src/components/ui` and the colors in the index.css file.
-
-Avoid hardcoding in colors unless necessary for a use case, and properly implement themes through the underlying shad cn ui components.
-
-When styling, ensure buttons and clickable items have pointer-click on them (don't by default).
-
-Always follow a set theme style and ensure it is tuned to the user's liking.
-
-## Toasts
-
-You should always use toasts to display results to the user, such as confirmations, results, errors, etc.
-
-Use the shad cn Sonner component as the toaster. For example:
+## Project structure
 
 ```
-import { toast } from "sonner"
+loan-risk-assessment-system/
+│
+├── frontend/  (this repo's src/)          # React + TypeScript app
+│   ├── src/
+│   │   ├── pages/                         # Landing, Assess, Results, Analytics,
+│   │   │                                  #   Explainability, ResponsibleAI, About
+│   │   ├── components/                    # AppLayout, RiskGauge, ConfusionMatrix, shadcn/ui
+│   │   ├── ml/                            # TypeScript ML engine
+│   │   │   ├── dataset.ts                 # deterministic dataset generator (seed 42)
+│   │   │   ├── preprocess.ts              # impute → winsorize → one-hot → standardize
+│   │   │   ├── logistic.ts                # Logistic Regression (gradient descent)
+│   │   │   ├── tree.ts                    # Random Forest (bagged decision trees)
+│   │   │   ├── metrics.ts                 # accuracy, precision, recall, F1, ROC-AUC, CM
+│   │   │   ├── explain.ts                 # risk score mapping + local ablation factors
+│   │   │   ├── train.ts                   # shared training + evaluation + selection
+│   │   │   └── artifacts/model.json       # the trained, deployed model artifact
+│   │   └── convex/                        # Convex backend
+│   │       ├── schema.ts                  # users + models tables
+│   │       ├── loan/api.ts                # health, model-info, features, predict, risk-score, retrain
+│   │       ├── loan/engine.ts             # inference (deserialize + predict)
+│   │       ├── loan/validate.ts           # input validation rules
+│   │       └── loanData.ts                # generated dataset (retrain endpoint)
+│   └── public/
+│
+├── backend/                               # Python FastAPI reference implementation
+│   ├── main.py                            # FastAPI app (same endpoints as the Convex API)
+│   ├── requirements.txt
+│   ├── dataset/
+│   │   └── loan_dataset.csv               # the training dataset (shared with the TS pipeline)
+│   ├── model/                             # artifacts written by train_model.py
+│   │   ├── loan_risk_model.pkl
+│   │   ├── scaler.pkl
+│   │   ├── encoder.pkl
+│   │   └── feature_columns.pkl
+│   └── ml/
+│       ├── train_model.py                 # train + evaluate + select + persist
+│       ├── preprocessing.py               # mirrors src/ml/preprocess.ts
+│       ├── evaluate_model.py              # metrics (sklearn)
+│       └── explain_model.py               # risk score + local factors
+│
+├── scripts/train.ts                       # offline training pipeline
+├── README.md
+└── .gitignore
+```
 
-import { Button } from "@/components/ui/button"
-export function SonnerDemo() {
-  return (
-    <Button
-      variant="outline"
-      onClick={() =>
-        toast("Event has been created", {
-          description: "Sunday, December 03, 2023 at 9:00 AM",
-          action: {
-            label: "Undo",
-            onClick: () => console.log("Undo"),
-          },
-        })
-      }
-    >
-      Show Toast
-    </Button>
-  )
+---
+
+## Dataset
+
+`backend/dataset/loan_dataset.csv` (1,500 applications) is the single source
+of truth for training.
+
+**Source:** the dataset is **simulated, not scraped** — it is generated
+deterministically by `src/ml/dataset.ts` (fixed seed 42) so the whole project
+is reproducible offline. It follows the structure of classic educational
+"loan approval prediction" datasets (credit history, income, loan amount,
+property area, education, …). The full generation logic, including the
+labeling function, is documented in the source file.
+
+**Labels are not random.** Each application's approval probability comes from
+an interpretable, underwriting-style scoring function — credit history,
+income, debt-to-income ratio, loan size, savings, existing debt, employment,
+education, and age — plus a small fixed amount of noise. Models trained on
+this data learn consistent, meaningful financial patterns.
+
+**Features (16) + target:**
+
+`applicant_age, applicant_income, coapplicant_income, loan_amount, loan_term,
+credit_history, employment_status, education, marital_status, dependents,
+property_area, self_employed, existing_loans, monthly_expenses, savings,
+debt_to_income_ratio` → **`loan_status`** (`Approved` / `Rejected`) plus a
+derived **`risk_category`** (`Low Risk` / `Medium Risk` / `High Risk`).
+
+**Missing values** are injected realistically (~7% credit history, ~5% loan
+amount, ~3% dependents, ~2% employment status) so the imputation pipeline is
+exercised exactly like a real dataset.
+
+> **Swap in a real dataset:** replace `backend/dataset/loan_dataset.csv` with
+> any dataset matching the same column schema, then run
+> `bun scripts/train.ts` (and/or `python -m backend.ml.train_model`) to
+> retrain, re-evaluate, and redeploy. No other change is required.
+
+---
+
+## Machine learning methodology
+
+1. **Preprocessing** — missing values imputed (numeric → training median,
+   categorical → training mode), numeric outliers winsorized at the 1st/99th
+   percentiles, categorical features one-hot encoded, numeric features
+   standardized. The fitted pipeline is persisted and reused verbatim at
+   prediction time (both in `src/ml/preprocess.ts` and
+   `backend/ml/preprocessing.py`).
+2. **Split** — stratified 80/20 train/test split with a fixed random state
+   (seed 42).
+3. **Models** — both **Logistic Regression** (gradient descent, 1,000
+   iterations) and **Random Forest Classifier** (80 trees, max depth 12, √n
+   features per split) are trained on the identical split.
+4. **Evaluation** — accuracy, precision, recall, F1-score, ROC-AUC and the
+   confusion matrix are computed on the identical held-out test set for both
+   models.
+5. **Selection** — the better model is chosen **by ROC-AUC** (the metric that
+   best measures how well a model ranks risk across thresholds), not by
+   assumption. The analytics page shows the full head-to-head comparison.
+6. **Explainability** — global impurity-based feature importance plus an
+   unbiased permutation importance on the test set; per-prediction local
+   attributions via ablation ("what-if") analysis.
+7. **Retraining** — the `POST /retrain` endpoint (or `bun scripts/train.ts`)
+   re-runs the entire pipeline and promotes the new winner to production
+   without any code change.
+
+### Live metrics
+
+The currently deployed model's metrics are always visible on the landing
+page, the dashboard, and `/analytics` (accuracy, ROC-AUC, F1, precision,
+recall, confusion matrix, feature importance, risk distribution).
+
+---
+
+## API
+
+The Convex backend exposes the following contract (the Python FastAPI service
+in `backend/` exposes the identical HTTP contract):
+
+| Method | Endpoint      | Description |
+| ------ | ------------- | ----------- |
+| GET    | `/`           | Health + active model summary |
+| GET    | `/health`     | Same, with a timestamp |
+| GET    | `/model-info` | Full evaluation summary (metrics, comparison, importance, pipeline) |
+| GET    | `/features`   | Feature schema used by the forms |
+| POST   | `/predict`    | Run an application → prediction, probability, risk score, category, factors, indicators, model info, disclaimer |
+| POST   | `/risk-score` | Compact risk-only response |
+| POST   | `/retrain`    | Retrain both models, select the winner, promote to production |
+
+Example `POST /predict` body:
+
+```json
+{
+  "input": {
+    "applicant_age": 32,
+    "applicant_income": 55000,
+    "coapplicant_income": 25000,
+    "loan_amount": 150000,
+    "loan_term": 360,
+    "credit_history": 1,
+    "employment_status": "Employed",
+    "education": "Graduate",
+    "marital_status": "Married",
+    "dependents": 1,
+    "property_area": "Urban",
+    "self_employed": "No",
+    "existing_loans": 1,
+    "monthly_expenses": 22000,
+    "savings": 120000,
+    "debt_to_income_ratio": 0.4
+  }
 }
 ```
 
-Remember to import { toast } from "sonner". Usage: `toast("Event has been created.")`
+No endpoint stores applicant data; results are computed and returned only.
 
-## Dialogs
+---
 
-Always ensure your larger dialogs have a scroll in its content to ensure that its content fits the screen size. Make sure that the content is not cut off from the screen.
+## Frontend
 
-Ideally, instead of using a new page, use a Dialog instead. 
+- **`/`** — landing page with a live model preview (a real prediction, not a
+  mockup), stats band, feature grid, how-it-works, and the LR vs RF comparison
+  chart.
+- **`/assess`** — a guided three-section application form (Applicant →
+  Financial → Loan) with the same validation rules as the API.
+- **`/results`** — the explained verdict: prediction, probability, risk gauge,
+  risk category, top factors with direction, financial indicators, model
+  metrics, and the disclaimer.
+- **`/analytics`** — full evaluation dashboard: head-to-head metric table and
+  chart, confusion matrix, impurity + permutation feature importance, risk
+  distribution, and pipeline/dataset details.
+- **`/explain`** — how the pipeline, both algorithms, the risk score, and the
+  per-prediction explanations work.
+- **`/dashboard`** — authenticated model overview with a **Retrain** action.
+- **`/responsible-ai`**, **`/about`** — principles and documentation.
 
-# Using the Convex backend
+All product pages are protected by `RequireAuth`; signing in returns you to
+the page you requested.
 
-You will be implementing the convex backend. Follow your knowledge of convex and the documentation to implement the backend.
+---
 
-## The Convex Schema
+## Python FastAPI backend
 
-You must correctly follow the convex schema implementation.
+The deployed web app runs the ML engine in TypeScript on Convex (so it is
+fully self-contained and serverless). The `backend/` directory additionally
+provides the equivalent **Python/scikit-learn implementation** — the same
+pipeline, models, metrics, selection rule and endpoints — for local execution
+or a classic Python-ML presentation:
 
-The schema is defined in `src/convex/schema.ts`.
+```bash
+cd loan-risk-assessment-system
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r backend/requirements.txt
 
-Do not include the `_id` and `_creationTime` fields in your queries (it is included by default for each table).
-Do not index `_creationTime` as it is indexed for you. Never have duplicate indexes.
-
-
-## Convex Actions: Using CRUD operations
-
-When running anything that involves external connections, you must use a convex action with "use node" at the top of the file.
-
-You cannot have queries or mutations in the same file as a "use node" action file. Thus, you must use pre-built queries and mutations in other files.
-
-You can also use the pre-installed internal crud functions for the database:
-
-```ts
-// in convex/users.ts
-import { crud } from "convex-helpers/server/crud";
-import schema from "./schema.ts";
-
-export const { create, read, update, destroy } = crud(schema, "users");
-
-// in some file, in an action:
-const user = await ctx.runQuery(internal.users.read, { id: userId });
-
-await ctx.runMutation(internal.users.update, {
-  id: userId,
-  patch: {
-    status: "inactive",
-  },
-});
+python -m backend.ml.train_model                    # trains + evaluates + writes backend/model/*.pkl
+uvicorn backend.main:app --reload                   # API at http://localhost:8000/docs
 ```
 
+---
 
-## Common Convex Mistakes To Avoid
+## Development
 
-When using convex, make sure:
-- Document IDs are referenced as `_id` field, not `id`.
-- Document ID types are referenced as `Id<"TableName">`, not `string`.
-- Document object types are referenced as `Doc<"TableName">`.
-- Keep schemaValidation to false in the schema file.
-- You must correctly type your code so that it passes the type checker.
-- You must handle null / undefined cases of your convex queries for both frontend and backend, or else it will throw an error that your data could be null or undefined.
-- Always use the `@/folder` path, with `@/convex/folder/file.ts` syntax for importing convex files.
-- This includes importing generated files like `@/convex/_generated/server`, `@/convex/_generated/api`
-- Remember to import functions like useQuery, useMutation, useAction, etc. from `convex/react`
-- NEVER have return type validators.
+```bash
+bun install
+bun convex dev --once     # Convex codegen
+bun tsc -b --noEmit       # typecheck
+bun scripts/train.ts      # (re)train the model and regenerate artifacts
+bun run dev               # start the Vite dev server
+```
+
+The frontend talks to Convex via `src/convex/loan/api.ts`; there is no local
+server to run for the deployed app.
+
+---
+
+## Responsible AI
+
+This is an **educational decision-support system**, not a lending decision
+maker:
+
+- No protected characteristics (gender, caste, religion, …) are used as features.
+- Applicant data is **never stored** — results live only in the browser tab.
+- Every prediction ships with a disclaimer and requires human review before
+  any real-world use.
+- Models are trained on a simulated dataset; real-world performance requires
+  retraining on real, representative data.
+
+---
+
+## License & disclaimer
+
+Educational project. Predictions are machine learning estimates, not
+guarantees, and do not constitute financial, legal, or lending advice.
